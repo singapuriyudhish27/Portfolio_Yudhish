@@ -4,9 +4,9 @@ import { TopNav } from "@/components/TopNav";
 export const revalidate = 0;
 
 export default function ConnectPage() {
-  const contactEmail = process.env.NEXT_PUBLIC_CONTACT_EMAIL;
-  const contactPhone = process.env.NEXT_PUBLIC_CONTACT_PHONE;
-  const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || contactPhone;
+  const contactEmail = process.env.NEXT_PUBLIC_CONTACT_EMAIL || "";
+  const contactPhone = process.env.NEXT_PUBLIC_CONTACT_PHONE || "";
+  const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || contactPhone || "";
   const whatsAppDigits = whatsappNumber.replace(/[^0-9]/g, "");
   const linkedin = process.env.NEXT_PUBLIC_LINKEDIN_URL;
   const github = process.env.NEXT_PUBLIC_GITHUB_URL;

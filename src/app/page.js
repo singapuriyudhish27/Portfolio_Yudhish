@@ -51,9 +51,9 @@ const skills = [
 
 export default async function HomePage() {
   const projects = await getProjects();
-  const contactEmail = process.env.NEXT_PUBLIC_CONTACT_EMAIL;
-  const contactPhone = process.env.NEXT_PUBLIC_CONTACT_PHONE;
-  const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || contactPhone;
+  const contactEmail = process.env.NEXT_PUBLIC_CONTACT_EMAIL || "";
+  const contactPhone = process.env.NEXT_PUBLIC_CONTACT_PHONE || "";
+  const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || contactPhone || "";
   const whatsAppDigits = whatsappNumber.replace(/[^0-9]/g, "");
   const n8nProjects = projects.filter((p) => (p.category || "").toLowerCase().includes("n8n"));
   const webAppProjects = projects
