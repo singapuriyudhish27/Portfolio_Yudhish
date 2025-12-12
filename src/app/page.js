@@ -3,6 +3,7 @@ import Link from "next/link";
 import { getProjects } from "@/lib/projects";
 import { TopNav } from "@/components/TopNav";
 import { ContactModalTrigger } from "@/components/ContactModalTrigger";
+import { ProtectedButton } from "@/components/ProtectedButton";
 
 export const revalidate = 0;
 
@@ -56,10 +57,10 @@ export default async function HomePage() {
               busywork so you can move faster.
             </p>
             <div className="cta-row">
-              <ContactModalTrigger triggerText="Book an appointment" variant="primary" />
-              <a className="btn btn-ghost" href={`tel:${contactPhone}`}>
+              <ContactModalTrigger triggerText="Book a call" variant="primary" />
+              <ProtectedButton className="btn btn-ghost" href={`tel:${contactPhone}`}>
                 Call me
-              </a>
+              </ProtectedButton>
               <Link className="btn btn-ghost" href="/projects">
                 View projects
               </Link>
@@ -245,9 +246,9 @@ export default async function HomePage() {
               changes—ready for a lightweight admin UI or CMS later.
             </p>
             <div style={{ marginTop: 12 }}>
-              <Link className="btn btn-primary" href="/connect">
+              <ProtectedButton className="btn btn-primary" href="/connect">
                 Connect with me
-              </Link>
+              </ProtectedButton>
             </div>
           </div>
         </section>
@@ -259,9 +260,9 @@ export default async function HomePage() {
           </p>
           <div className="cta-row" style={{ justifyContent: "center" }}>
             <ContactModalTrigger triggerText="Start a project" variant="primary" />
-            <a className="btn btn-ghost" href={`tel:${contactPhone}`}>
+            <ProtectedButton className="btn btn-ghost" href={`tel:${contactPhone}`}>
               Talk on the phone
-            </a>
+            </ProtectedButton>
           </div>
         </div>
       </div>

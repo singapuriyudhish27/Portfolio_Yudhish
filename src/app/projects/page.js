@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { TopNav } from "@/components/TopNav";
 import { getProjects } from "@/lib/projects";
+import { ProtectedButton } from "@/components/ProtectedButton";
+import { AdminOnly } from "@/components/AdminOnly";
 
 export const revalidate = 0;
 
@@ -63,9 +65,11 @@ export default async function ProjectsPage() {
                   </a>
                 ) : null}
                 {project.id ? (
-                  <Link className="btn btn-ghost" href={`/projects/${project.id}/edit`}>
-                    Edit
-                  </Link>
+                  <AdminOnly>
+                    <Link className="btn btn-ghost" href={`/projects/${project.id}/edit`}>
+                      Edit
+                    </Link>
+                  </AdminOnly>
                 ) : null}
               </div>
             </div>
@@ -90,9 +94,11 @@ export default async function ProjectsPage() {
               <h2>Projects & automations</h2>
               <span className="pill">Web apps · n8n workflows</span>
             </div>
-            <Link className="btn btn-primary" href="/projects/new">
-              Add new project
-            </Link>
+            <AdminOnly>
+              <Link className="btn btn-primary" href="/projects/new">
+                Add new project
+              </Link>
+            </AdminOnly>
           </div>
           <p className="subtle">
             A mix of production-grade web applications and n8n workflows. Stored in MySQL via the built-in API so new
@@ -115,9 +121,9 @@ export default async function ProjectsPage() {
           <h3>Want to see a specific workflow or app?</h3>
           <p className="subtle">Tell me what you need and I&apos;ll share the most relevant examples.</p>
           <div className="cta-row" style={{ justifyContent: "center" }}>
-            <Link className="btn btn-primary" href="/connect">
+            <ProtectedButton className="btn btn-primary" href="/connect">
               Connect with me
-            </Link>
+            </ProtectedButton>
             <Link className="btn btn-ghost" href="/">
               Back to home
             </Link>

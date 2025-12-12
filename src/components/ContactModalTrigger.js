@@ -1,9 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { LoginModal } from "./LoginModal";
 
 export function ContactModalTrigger({ triggerText, variant = "primary" }) {
+  const { isAuthenticated } = useAuth();
   const [open, setOpen] = useState(false);
+  const [loginOpen, setLoginOpen] = useState(false);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState(null);
   const [form, setForm] = useState({
@@ -14,6 +18,18 @@ export function ContactModalTrigger({ triggerText, variant = "primary" }) {
   });
 
   const update = (key) => (e) => setForm((prev) => ({ ...prev, [key]: e.target.value }));
+
+  const handleClick = () => {
+    if (isAuthenticated) {
+      setOpen(true);
+    } else {
+      setLoginOpen(true);
+    }
+  };
+
+  const handleLoginSuccess = () => {
+    setOpen(true);
+  };
 
   const submit = async (e) => {
     e.preventDefault();
@@ -48,10 +64,17 @@ export function ContactModalTrigger({ triggerText, variant = "primary" }) {
       <button
         type="button"
         className={`btn ${variant === "primary" ? "btn-primary" : "btn-ghost"}`}
-        onClick={() => setOpen(true)}
+        onClick={handleClick}
       >
         {triggerText}
       </button>
+
+      <LoginModal
+        open={loginOpen}
+        onClose={() => setLoginOpen(false)}
+        onSuccess={handleLoginSuccess}
+        title="Login to Continue"
+      />
 
       {open ? (
         <div className="modal-overlay" role="dialog" aria-modal="true">

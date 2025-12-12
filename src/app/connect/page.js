@@ -1,9 +1,12 @@
+"use client";
+
 import Link from "next/link";
 import { TopNav } from "@/components/TopNav";
-
-export const revalidate = 0;
+import { ProtectedButton } from "@/components/ProtectedButton";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function ConnectPage() {
+  const { isAuthenticated } = useAuth();
   const contactEmail = process.env.NEXT_PUBLIC_CONTACT_EMAIL || "";
   const contactPhone = process.env.NEXT_PUBLIC_CONTACT_PHONE || "";
   const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || contactPhone || "";
@@ -71,9 +74,15 @@ export default function ConnectPage() {
                     <strong>{item.title}</strong>
                     <div className="subtle">{item.value}</div>
                   </div>
-                  <a className="btn btn-ghost" href={item.href} target="_blank" rel="noreferrer">
-                    {item.cta}
-                  </a>
+                  {isAuthenticated ? (
+                    <a className="btn btn-ghost" href={item.href} target="_blank" rel="noreferrer">
+                      {item.cta}
+                    </a>
+                  ) : (
+                    <ProtectedButton className="btn btn-ghost" href={item.href}>
+                      {item.cta}
+                    </ProtectedButton>
+                  )}
                 </div>
               ))}
             </div>

@@ -18,12 +18,8 @@ async function ensureProjectsTable(pool) {
 }
 
 export async function getProjects() {
-  const pool = getPool();
-  if (!pool) {
-    return fallbackProjects;
-  }
-
   try {
+    const pool = await ensureConnection();
     await ensureProjectsTable(pool);
     const [rows] = await pool.query(
       "SELECT id, title, description, category, status, link, tags FROM projects ORDER BY created_at DESC;"
@@ -105,12 +101,6 @@ export async function updateProject(id, project) {
 }
 
 export async function getProjectById(id) {
-  const pool = getPool();
-  if (!pool) {
-    console.error("Database pool not available");
-    return null;
-  }
-
   try {
     // Ensure id is a number
     const projectId = parseInt(id, 10);
@@ -119,6 +109,7 @@ export async function getProjectById(id) {
       return null;
     }
 
+    const pool = await ensureConnection();
     await ensureProjectsTable(pool);
     const [rows] = await pool.query(
       "SELECT id, title, description, category, status, link, tags FROM projects WHERE id = ?",

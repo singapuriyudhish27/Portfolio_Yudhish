@@ -14,9 +14,7 @@ export default function EditProjectPage() {
   // Handle case where id might be an array (Next.js dynamic routes)
   const projectId = Array.isArray(params.id) ? params.id[0] : params.id;
   
-  const [authed, setAuthed] = useState(false);
-  const [loginForm, setLoginForm] = useState({ email: "", password: "" });
-  const [loginError, setLoginError] = useState("");
+  // No admin auth gating: form is always available
   const [loading, setLoading] = useState(true);
   const [form, setForm] = useState({
     title: "",
@@ -32,10 +30,6 @@ export default function EditProjectPage() {
 
   const updateField = (key) => (e) => {
     setForm((prev) => ({ ...prev, [key]: e.target.value }));
-  };
-
-  const updateLogin = (key) => (e) => {
-    setLoginForm((prev) => ({ ...prev, [key]: e.target.value }));
   };
 
   useEffect(() => {
@@ -81,32 +75,8 @@ export default function EditProjectPage() {
     loadProject();
   }, [projectId]);
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    setLoginError("");
-    try {
-      const res = await fetch("/api/admin-auth", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: loginForm.email, password: loginForm.password }),
-      });
-      const data = await res.json();
-      if (!res.ok || !data.ok) {
-        throw new Error(data.error || "Only Admin can Access. Invalid credentials.");
-      }
-      setAuthed(true);
-      setLoginError("");
-    } catch (err) {
-      setLoginError(err.message || "Only Admin can Access.");
-    }
-  };
-
   const onSubmit = async (e) => {
     e.preventDefault();
-    if (!authed) {
-      setMessage({ type: "error", text: "Only Admin can Access. Please login first." });
-      return;
-    }
     setSaving(true);
     setMessage(null);
 
@@ -125,9 +95,6 @@ export default function EditProjectPage() {
             .split(",")
             .map((t) => t.trim())
             .filter(Boolean),
-          // Include admin credentials for server-side authentication
-          email: loginForm.email,
-          password: loginForm.password,
         }),
       });
 
@@ -182,54 +149,7 @@ export default function EditProjectPage() {
             </div>
           ) : null}
 
-          {!authed ? (
-            <div className="glass" style={{ padding: 18, marginBottom: 16 }}>
-              <div className="section-header" style={{ marginBottom: 8 }}>
-                <h3>Admin login required</h3>
-                <span className="pill-ghost">Restricted</span>
-              </div>
-              <p className="subtle" style={{ marginBottom: 12 }}>
-                Please login with admin credentials to edit this project.
-              </p>
-              <form className="form-card" onSubmit={handleLogin}>
-                <div className="form-grid">
-                  <label className="field">
-                    <span>Admin email</span>
-                    <input
-                      value={loginForm.email}
-                      onChange={updateLogin("email")}
-                      placeholder="admin@example.com"
-                      type="email"
-                      required
-                    />
-                  </label>
-                  <label className="field">
-                    <span>Password</span>
-                    <input
-                      value={loginForm.password}
-                      onChange={updateLogin("password")}
-                      placeholder="••••••••"
-                      type="password"
-                      required
-                    />
-                  </label>
-                </div>
-                {loginError ? <div className="notice notice-error">{loginError}</div> : null}
-                <div className="modal-actions">
-                  <button className="btn btn-primary" type="submit">
-                    Login as Admin
-                  </button>
-                </div>
-              </form>
-            </div>
-          ) : (
-            <div className="notice notice-success" style={{ marginBottom: 12 }}>
-              Admin verified. You can edit this project.
-            </div>
-          )}
-
-          {!authed ? null : (
-            <form className="form-card" onSubmit={onSubmit}>
+          <form className="form-card" onSubmit={onSubmit}>
               <div className="form-grid">
                 <label className="field">
                   <span>Project name</span>
@@ -309,7 +229,6 @@ export default function EditProjectPage() {
                 </Link>
               </div>
             </form>
-          )}
         </section>
       </div>
     </div>

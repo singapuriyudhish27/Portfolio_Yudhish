@@ -8,9 +8,6 @@ const statusOptions = ["Planned", "In Progress", "Delivered", "Live"];
 const categoryOptions = ["Web Application", "N8N Workflow"];
 
 export default function NewProjectPage() {
-  const [authed, setAuthed] = useState(false);
-  const [loginForm, setLoginForm] = useState({ email: "", password: "" });
-  const [loginError, setLoginError] = useState("");
   const [form, setForm] = useState({
     title: "",
     description: "",
@@ -27,36 +24,8 @@ export default function NewProjectPage() {
     setForm((prev) => ({ ...prev, [key]: e.target.value }));
   };
 
-  const updateLogin = (key) => (e) => {
-    setLoginForm((prev) => ({ ...prev, [key]: e.target.value }));
-  };
-
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    setLoginError("");
-    try {
-      const res = await fetch("/api/admin-auth", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: loginForm.email, password: loginForm.password }),
-      });
-      const data = await res.json();
-      if (!res.ok || !data.ok) {
-        throw new Error(data.error || "Only Admin can Access. Invalid credentials.");
-      }
-      setAuthed(true);
-      setLoginError("");
-    } catch (err) {
-      setLoginError(err.message || "Only Admin can Access.");
-    }
-  };
-
   const onSubmit = async (e) => {
     e.preventDefault();
-    if (!authed) {
-      setMessage({ type: "error", text: "Only Admin can Access. Please login first." });
-      return;
-    }
     setSaving(true);
     setMessage(null);
 
@@ -74,10 +43,7 @@ export default function NewProjectPage() {
             .split(",")
             .map((t) => t.trim())
             .filter(Boolean),
-          period: form.period,
-          // Include admin credentials for server-side authentication
-          email: loginForm.email,
-          password: loginForm.password,
+          period: form.period
         }),
       });
 
@@ -109,53 +75,6 @@ export default function NewProjectPage() {
             Save project details to the MySQL-backed API. These entries can be surfaced on the home and projects pages.
           </p>
 
-          {!authed ? (
-            <div className="glass" style={{ padding: 18, marginBottom: 16 }}>
-              <div className="section-header" style={{ marginBottom: 8 }}>
-                <h3>Admin login required</h3>
-                <span className="pill-ghost">Restricted</span>
-              </div>
-              <p className="subtle" style={{ marginBottom: 12 }}>
-                Please login with admin credentials to add a project.
-              </p>
-              <form className="form-card" onSubmit={handleLogin}>
-                <div className="form-grid">
-                  <label className="field">
-                    <span>Admin email</span>
-                    <input
-                      value={loginForm.email}
-                      onChange={updateLogin("email")}
-                      placeholder="admin@example.com"
-                      type="email"
-                      required
-                    />
-                  </label>
-                  <label className="field">
-                    <span>Password</span>
-                    <input
-                      value={loginForm.password}
-                      onChange={updateLogin("password")}
-                      placeholder="••••••••"
-                      type="password"
-                      required
-                    />
-                  </label>
-                </div>
-                {loginError ? <div className="notice notice-error">{loginError}</div> : null}
-                <div className="modal-actions">
-                  <button className="btn btn-primary" type="submit">
-                    Login as Admin
-                  </button>
-                </div>
-              </form>
-            </div>
-          ) : (
-            <div className="notice notice-success" style={{ marginBottom: 12 }}>
-              Admin verified. You can add a new project.
-            </div>
-          )}
-
-          {!authed ? null : (
           <form className="form-card" onSubmit={onSubmit}>
             <div className="form-grid">
               <label className="field">
@@ -245,7 +164,6 @@ export default function NewProjectPage() {
               </Link>
             </div>
           </form>
-          )}
         </section>
       </div>
     </div>

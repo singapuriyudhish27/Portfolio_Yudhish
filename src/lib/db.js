@@ -1,6 +1,7 @@
 import mysql from "mysql2/promise";
 
 let pool;
+let creatingPoolPromise = null;
 
 const dbConfig = {
   host: process.env.DB_HOST,
@@ -25,17 +26,31 @@ function shouldSkipInProd() {
   );
 }
 
-export function getPool() {
+async function ensureDatabaseExists() {
+  const { database, ...baseConfig } = dbConfig;
+  if (!database) {
+    throw new Error("DB_NAME is required to create the database.");
+  }
+  const connection = await mysql.createConnection(baseConfig);
+  try {
+    await connection.query(`CREATE DATABASE IF NOT EXISTS \`${database}\``);
+  } finally {
+    await connection.end();
+  }
+}
+
+async function createPool() {
   if (pool) return pool;
   if (shouldSkipInProd()) {
-    console.warn(
-      "Database not reachable in production. Skipping DB pool creation and falling back to static data."
+    throw new Error(
+      "Database not reachable in production. Provide DB_HOST/DB_USER/DB_PASSWORD/DB_NAME and avoid localhost in production."
     );
-    return null;
   }
   if (!hasConfig()) {
-    return null;
+    throw new Error("Database configuration is missing. Please set DB_HOST, DB_USER, DB_PASSWORD, DB_NAME.");
   }
+
+  await ensureDatabaseExists();
 
   pool = mysql.createPool({
     ...dbConfig,
@@ -47,13 +62,19 @@ export function getPool() {
   return pool;
 }
 
+export function getPool() {
+  return pool || null;
+}
+
 export async function ensureConnection() {
-  const connection = getPool();
-  if (!connection) {
-    throw new Error(
-      "Database unavailable. Provide DB_HOST/DB_USER/DB_PASSWORD/DB_NAME and avoid localhost in production."
-    );
+  if (pool) return pool;
+
+  if (!creatingPoolPromise) {
+    creatingPoolPromise = createPool().finally(() => {
+      creatingPoolPromise = null;
+    });
   }
-  return connection;
+
+  return creatingPoolPromise;
 }
 
