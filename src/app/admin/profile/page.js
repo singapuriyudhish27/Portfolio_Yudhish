@@ -67,9 +67,6 @@ export default function AdminPanelPage() {
                 <Link className="btn btn-ghost" href="/projects">
                   Manage Projects
                 </Link>
-                <Link className="btn btn-ghost" href="/">
-                  View Homepage
-                </Link>
               </div>
             </div>
 
