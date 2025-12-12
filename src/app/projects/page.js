@@ -13,12 +13,12 @@ function splitProjects(projects) {
 
   for (const project of projects) {
     const category = (project.category || "").toLowerCase();
+    const status = (project.status || "").toLowerCase();
+
     if (category.includes("n8n")) {
       n8n.push(project);
-      continue;
     }
 
-    const status = (project.status || "").toLowerCase();
     if (status.includes("progress") || status.includes("building") || status.includes("planned")) {
       inProgress.push(project);
     } else {
@@ -114,7 +114,7 @@ export default async function ProjectsPage() {
         </section>
 
         {sectionBlock("Live & delivered", live, "New live projects will appear here soon.")}
-        {sectionBlock("In progress / building now", inProgress, "Active builds will show up once they are added.")}
+        {sectionBlock("In progress / Currently developing", inProgress, "Active builds will show up once they are added.")}
         {sectionBlock("N8N Workflows", n8n, "Add N8N workflow projects to see them here.")}
 
         <div className="footer-cta">
