@@ -6,27 +6,6 @@ import { ContactModalTrigger } from "@/components/ContactModalTrigger";
 
 export const revalidate = 0;
 
-const workflowHighlights = [
-  {
-    title: "Lead capture to CRM",
-    description:
-      "Multi-source intake, enrichment, dedupe, and instant routing to the right pipeline owners with alerts.",
-    tags: ["Webhooks", "n8n", "CRM"],
-  },
-  {
-    title: "Ops automations",
-    description:
-      "Daily health checks, SLA alerts, and reporting automations so stakeholders get the right signal on time.",
-    tags: ["Monitoring", "Dashboards", "Alerts"],
-  },
-  {
-    title: "Product launch stack",
-    description:
-      "Landing pages, waitlist logic, onboarding flows, and product analytics wired up for fast iteration.",
-    tags: ["Next.js", "Email", "Analytics"],
-  },
-];
-
 const stats = [
   { value: "3+", label: "Projects shipped" },
   { value: "12h", label: "Avg. response time" },

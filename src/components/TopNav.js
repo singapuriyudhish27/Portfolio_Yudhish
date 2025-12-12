@@ -11,7 +11,7 @@ export function TopNav() {
     <header className="top-nav">
       <Link href="/" className="logo" aria-label="Go to home">
         <span className="badge">Freelancer</span>
-        <span>Web Apps & N8N Automations</span>
+        <span>Web-Sites & N8N Automations</span>
       </Link>
       <nav className="nav-links" aria-label="Primary">
         {navLinks.map((link) => (
