@@ -15,9 +15,11 @@ export function TopNav() {
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
-    setTimeout(() => {
+    // Set hydrated after mount to avoid hydration mismatch
+    const timer = setTimeout(() => {
       setHydrated(true);
-    }, 1000);
+    }, 0);
+    return () => clearTimeout(timer);
   }, []);
 
   return (
@@ -27,7 +29,7 @@ export function TopNav() {
         {/* <span className="badge">Freelancer</span>
         <span>Web Apps & N8N Automations</span> */}
       </Link>
-      <nav className="nav-links" aria-label="Primary">
+      <nav className="nav-links" aria-label="Primary" suppressHydrationWarning>
         {navLinks.map((link) => (
           <Link key={link.href} href={link.href} className="pill nav-pill">
             {link.label}
@@ -43,12 +45,12 @@ export function TopNav() {
         )}
         {hydrated && isUser && !isAdmin && (
           <Link href="/user/profile" className="pill nav-pill">
-            User Profile
+            Profile
           </Link>
         )}
         {hydrated && isAdmin && (
           <Link href="/admin/profile" className="pill nav-pill">
-            Admin Panel
+            Admin
           </Link>
         )}
       </nav>
